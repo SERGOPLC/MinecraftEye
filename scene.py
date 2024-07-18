@@ -5,6 +5,7 @@ from world_objects.voxel_marker import VoxelMarker
 from world_objects.water import Water
 from world_objects.clouds import Clouds
 from world_objects.state import State
+from world_objects.line import Line
 
 
 class Scene:
@@ -17,6 +18,8 @@ class Scene:
         self.states = dict()
         self.states[(480, 33, 480)] = State(app, glm.vec3(480.33, 33.33, 480.33))
         self.states[(480, 33, 480)].mode = 0
+        self.states[(482, 37, 489)] = State(app, glm.vec3(482.33, 37.33, 489.33))
+        self.states[(482, 37, 489)].mode = 0
         self.states[(481, 33, 480)] = State(app, glm.vec3(481.33, 33.33, 480.33))
         self.states[(481, 33, 480)].mode = 1
         self.states[(482, 33, 480)] = State(app, glm.vec3(482.33, 33.33, 480.33))
@@ -31,6 +34,11 @@ class Scene:
         self.states[(486, 33, 480)].mode = 0
         self.states[(487, 33, 480)] = State(app, glm.vec3(487.33, 33.33, 480.33))
         self.states[(487, 33, 480)].mode = 0
+        self.edges = dict()
+        self.edges[(480, 33, 480)] = Line(app, (480.475, 33.475, 480.475), (482.475, 37.475, 489.475))
+        self.edges[(480, 33, 480)].mode = 3
+        self.edges[(481, 33, 480)] = Line(app, (480.475, 33.475, 480.475), (481.475, 33.475, 480.475))
+        self.edges[(481, 33, 480)].mode = 3
 
     def update(self):
         self.world.update()
@@ -53,3 +61,6 @@ class Scene:
         # States render
         for key in self.states.keys():
             self.states[key].render()
+
+        for key in self.edges.keys():
+            self.edges[key].render()
