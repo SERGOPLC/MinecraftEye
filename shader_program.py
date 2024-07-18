@@ -9,6 +9,7 @@ class ShaderProgram:
         # -------- shaders -------- #
         self.chunk = self.get_program(shader_name='chunk')
         self.voxel_marker = self.get_program(shader_name='voxel_marker')
+        self.state = self.get_program(shader_name='state')
         self.water = self.get_program('water')
         self.clouds = self.get_program('clouds')
         # ------------------------- #
@@ -27,6 +28,11 @@ class ShaderProgram:
         self.voxel_marker['m_model'].write(glm.mat4())
         self.voxel_marker['u_texture_0'] = 0
 
+        # state
+        self.state['m_proj'].write(self.player.m_proj)
+        self.state['m_model'].write(glm.mat4())
+        self.state['u_texture_0'] = 0
+
         # water
         self.water['m_proj'].write(self.player.m_proj)
         self.water['u_texture_0'] = 2
@@ -44,6 +50,7 @@ class ShaderProgram:
         self.voxel_marker['m_view'].write(self.player.m_view)
         self.water['m_view'].write(self.player.m_view)
         self.clouds['m_view'].write(self.player.m_view)
+        self.state['m_view'].write(self.player.m_view)
 
     def get_program(self, shader_name):
         with open(f'shaders/{shader_name}.vert') as file:

@@ -36,7 +36,7 @@ class Chunk:
         voxels = np.zeros(CHUNK_VOL, dtype='uint8')
 
         cx, cy, cz = glm.ivec3(self.position) * CHUNK_SIZE
-        self.generate_terrain(voxels, cx, cy, cz)
+        # self.generate_terrain(voxels, cx, cy, cz)
 
         if np.any(voxels):
             self.is_empty = False

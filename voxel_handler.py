@@ -19,9 +19,23 @@ class VoxelHandler:
         self.new_voxel_id = DIRT
 
     def add_voxel(self):
-        if self.voxel_id:
-            # check voxel id along normal
-            result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
+        # if self.voxel_id:
+        #     # check voxel id along normal
+        #     result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
+        #
+        #     # is the new place empty?
+        #     if not result[0]:
+        #         _, voxel_index, _, chunk = result
+        #         chunk.voxels[voxel_index] = self.new_voxel_id
+        #         chunk.mesh.rebuild()
+        #
+        #         # was it an empty chunk
+        #         if chunk.is_empty:
+        #             chunk.is_empty = False
+
+        # check voxel id along normal
+        for i, v in enumerate(range(10)):
+            result = self.get_voxel_id(glm.ivec3(480 + i, 32, 480))
 
             # is the new place empty?
             if not result[0]:

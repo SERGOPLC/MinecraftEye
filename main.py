@@ -32,6 +32,7 @@ class VoxelEngine:
 
         self.is_running = True
         self.on_init()
+        self.focus = True
 
     def on_init(self):
         self.textures = Textures(self)
@@ -40,7 +41,8 @@ class VoxelEngine:
         self.scene = Scene(self)
 
     def update(self):
-        self.player.update()
+        if self.focus:
+            self.player.update()
         self.shader_program.update()
         self.scene.update()
 
@@ -55,8 +57,16 @@ class VoxelEngine:
 
     def handle_events(self):
         for event in pg.event.get():
-            if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+            if event.type == pg.QUIT:
                 self.is_running = False
+            if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+                self.focus = False
+                pg.event.set_grab(False)
+                pg.mouse.set_visible(True)
+            if event.type == pg.KEYDOWN and event.key == pg.K_KP_ENTER:
+                self.focus = True
+                pg.event.set_grab(True)
+                pg.mouse.set_visible(False)
             self.player.handle_event(event=event)
 
     def run(self):

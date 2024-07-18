@@ -4,6 +4,7 @@ from world import World
 from world_objects.voxel_marker import VoxelMarker
 from world_objects.water import Water
 from world_objects.clouds import Clouds
+from world_objects.state import State
 
 
 class Scene:
@@ -13,6 +14,23 @@ class Scene:
         self.voxel_marker = VoxelMarker(self.world.voxel_handler)
         self.water = Water(app)
         self.clouds = Clouds(app)
+        self.states = dict()
+        self.states[(480, 33, 480)] = State(app, glm.vec3(480.33, 33.33, 480.33))
+        self.states[(480, 33, 480)].mode = 0
+        self.states[(481, 33, 480)] = State(app, glm.vec3(481.33, 33.33, 480.33))
+        self.states[(481, 33, 480)].mode = 1
+        self.states[(482, 33, 480)] = State(app, glm.vec3(482.33, 33.33, 480.33))
+        self.states[(482, 33, 480)].mode = 2
+        self.states[(483, 33, 480)] = State(app, glm.vec3(483.33, 33.33, 480.33))
+        self.states[(483, 33, 480)].mode = 3
+        self.states[(484, 33, 480)] = State(app, glm.vec3(484.33, 33.33, 480.33))
+        self.states[(484, 33, 480)].mode = 0
+        self.states[(485, 33, 480)] = State(app, glm.vec3(485.33, 33.33, 480.33))
+        self.states[(485, 33, 480)].mode = 0
+        self.states[(486, 33, 480)] = State(app, glm.vec3(486.33, 33.33, 480.33))
+        self.states[(486, 33, 480)].mode = 0
+        self.states[(487, 33, 480)] = State(app, glm.vec3(487.33, 33.33, 480.33))
+        self.states[(487, 33, 480)].mode = 0
 
     def update(self):
         self.world.update()
@@ -31,3 +49,7 @@ class Scene:
 
         # voxel selection
         self.voxel_marker.render()
+
+        # States render
+        for key in self.states.keys():
+            self.states[key].render()
