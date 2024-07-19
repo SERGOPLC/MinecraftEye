@@ -18,7 +18,7 @@ class VoxelHandler:
         self.interaction_mode = 0  # 0: remove voxel   1: add voxel
         self.new_voxel_id = DIRT
 
-    def add_voxel(self):
+    def add_voxel(self, x, y, z):
         # if self.voxel_id:
         #     # check voxel id along normal
         #     result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
@@ -34,18 +34,17 @@ class VoxelHandler:
         #             chunk.is_empty = False
 
         # check voxel id along normal
-        for i, v in enumerate(range(10)):
-            result = self.get_voxel_id(glm.ivec3(480 + i, 32, 480))
+        result = self.get_voxel_id(glm.ivec3(x, y, z))
 
-            # is the new place empty?
-            if not result[0]:
-                _, voxel_index, _, chunk = result
-                chunk.voxels[voxel_index] = self.new_voxel_id
-                chunk.mesh.rebuild()
+        # is the new place empty?
+        if not result[0]:
+            _, voxel_index, _, chunk = result
+            chunk.voxels[voxel_index] = self.new_voxel_id
+            chunk.mesh.rebuild()
 
-                # was it an empty chunk
-                if chunk.is_empty:
-                    chunk.is_empty = False
+            # was it an empty chunk
+            if chunk.is_empty:
+                chunk.is_empty = False
 
     def rebuild_adj_chunk(self, adj_voxel_pos):
         index = get_chunk_index(adj_voxel_pos)
