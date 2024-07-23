@@ -5,3 +5,5 @@ PyGLM==2.7.0
 numpy<1.25,>=1.21
 opensimplex[numpy]==0.4.4
 
+
+pillow~=10.4.0

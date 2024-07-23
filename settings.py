@@ -9,7 +9,7 @@ DEPTH_SIZE = 24
 NUM_SAMPLES = 1  # antialiasing
 
 # resolution
-WIN_RES = glm.vec2(1600, 900)
+WIN_RES = glm.vec2(800, 600)
 
 # world generation
 SEED = 16
@@ -44,10 +44,11 @@ FAR = 2000.0
 PITCH_MAX = glm.radians(89)
 
 # player
-PLAYER_SPEED = 0.005
+PLAYER_SPEED = 0.05
 PLAYER_ROT_SPEED = 0.003
 # PLAYER_POS = glm.vec3(CENTER_XZ, WORLD_H * CHUNK_SIZE, CENTER_XZ)
 PLAYER_POS = glm.vec3(CENTER_XZ, CHUNK_SIZE, CENTER_XZ)
+# PLAYER_POS = glm.vec3(206, 70, 119)
 MOUSE_SENSITIVITY = 0.002
 
 # colors

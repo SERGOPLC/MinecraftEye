@@ -1,6 +1,6 @@
 from settings import *
 from meshes.chunk_mesh_builder import get_chunk_index
-
+import csv
 
 class VoxelHandler:
     def __init__(self, world):
@@ -17,8 +17,22 @@ class VoxelHandler:
 
         self.interaction_mode = 0  # 0: remove voxel   1: add voxel
         self.new_voxel_id = DIRT
+        self.voxel_dict = dict()
 
-    def add_voxel(self, x, y, z):
+        raw = list(csv.reader(open('assets/minecraft_textures_atlas_blocks.png.txt', 'r'), delimiter='\t'))
+        clean = list()
+
+        for item in raw:
+            if 'minecraft:block/' in item[0]:
+                item[0] = item[0][16::]
+                clean.append(item)
+
+        for i, v in enumerate(clean):
+            self.voxel_dict[v[0]] = i
+
+        print(self.voxel_dict)
+
+    def add_voxel(self, x, y, z, kind):
         # if self.voxel_id:
         #     # check voxel id along normal
         #     result = self.get_voxel_id(self.voxel_world_pos + self.voxel_normal)
@@ -39,12 +53,20 @@ class VoxelHandler:
         # is the new place empty?
         if not result[0]:
             _, voxel_index, _, chunk = result
-            chunk.voxels[voxel_index] = self.new_voxel_id
-            chunk.mesh.rebuild()
+            try:
+                match kind:
+                    case 'grass_block':
+                        kind = 'grass_block_top'
+                chunk.voxels[voxel_index] = self.voxel_dict[kind]
+                print('type', kind, self.voxel_dict[kind])
 
-            # was it an empty chunk
-            if chunk.is_empty:
-                chunk.is_empty = False
+                chunk.mesh.rebuild()
+
+                # was it an empty chunk
+                if chunk.is_empty:
+                    chunk.is_empty = False
+            except KeyError:
+                pass
 
     def rebuild_adj_chunk(self, adj_voxel_pos):
         index = get_chunk_index(adj_voxel_pos)
