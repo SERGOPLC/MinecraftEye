@@ -7,10 +7,9 @@ class State:
     def __init__(self, app, position):
         self.app = app
         self.position = position
-        print('State Position', position)
         self.m_model = self.get_model_matrix()
         self.mesh = StateMesh(self.app)
-        self.mode = 0
+        self.mode = 2
 
     def set_uniform(self):
         self.mesh.program['mode_id'] = self.mode

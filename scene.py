@@ -36,9 +36,9 @@ class Scene:
         self.states[(487, 33, 480)] = State(app, glm.vec3(487.33, 33.33, 480.33))
         self.states[(487, 33, 480)].mode = 0
         self.edges = dict()
-        self.edges[(480, 33, 480)] = Line(app, (480.475, 33.475, 480.475), (482.475, 37.475, 489.475))
+        self.edges[(480, 33, 480)] = Line(app, (480.45, 33.45, 480.45), (482.45, 37.45, 489.45))
         self.edges[(480, 33, 480)].mode = 3
-        self.edges[(481, 33, 480)] = Line(app, (480.475, 33.475, 480.475), (481.475, 33.475, 480.475))
+        self.edges[(481, 33, 480)] = Line(app, (480.45, 33.45, 480.45), (481.45, 33.45, 480.45))
         self.edges[(481, 33, 480)].mode = 3
         self.grid = dict()
         self.time = time.time()
@@ -47,33 +47,46 @@ class Scene:
         self.world.update()
         self.voxel_marker.update()
         self.clouds.update()
+        updated = False
+        current_state = None
 
         if time.time() - self.time > 2:
             try:
-                load_states = dict()
-                load_edges = dict()
-                # load_states = np.load('fname', allow_pickle=True).item()
-                # load_edges = np.load('fname', allow_pickle=True).item()
+                load_states = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
+                load_edges = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
                 load_grid = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/grid_output.npy', allow_pickle=True).item()
 
                 self.time = time.time()
+                self.states = dict()
+                self.edges = dict()
 
                 for load_key in load_states.keys():
-                    if load_key not in self.states.keys():
-                        self.states[load_key] = State(self.app, glm.vec3(load_states[load_key][0], load_states[load_key][1], load_states[load_key][2]))
+                    self.states[load_key] = State(self.app, glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33))
+                    self.states[load_key].mode = load_states[load_key][3]
+                    updated = True
 
                 for load_key in load_edges.keys():
-                    self.edges[load_key] = Line(self.app, glm.vec3(load_edges[load_key][0], load_edges[load_key][1], load_edges[load_key][2]), glm.vec3(load_edges[load_key][3], load_edges[load_key][4], load_edges[load_key][5]))
+                    self.edges[load_key] = Line(self.app, glm.vec3(load_edges[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][1] + .45, load_edges[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .45), glm.vec3(load_edges[load_key][3] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][4] + .45, load_edges[load_key][5] + (WORLD_D * CHUNK_SIZE / 2) + .45))
+                    self.edges[load_key].mode = load_edges[load_key][6]
+                    updated = True
 
                 for load_key in load_grid.keys():
                     if load_key not in self.grid.keys():
                         self.grid[load_key] = load_grid[load_key]
                         self.world.voxel_handler.add_voxel(load_grid[load_key][0] + (WORLD_W * CHUNK_SIZE / 2), load_grid[load_key][1], load_grid[load_key][2] + (WORLD_D * CHUNK_SIZE / 2), load_grid[load_key][3])
-                        print(load_grid[load_key])
+                        updated = True
             except FileNotFoundError:
                 pass
             except PermissionError:
                 pass
+
+            # if updated:
+            #     for state in self.states.keys():
+            #         if self.states[state] != current_state:
+            #             self.states[state].mode = 3
+
+
+
 
     def render(self):
         # chunks rendering

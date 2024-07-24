@@ -9,7 +9,7 @@ class Line:
         self.position = glm.vec3(start_pos[0], start_pos[1], start_pos[2])
         self.m_model = self.get_model_matrix()
         self.mesh = LineMesh(self.app, start_pos, end_pos)
-        self.mode = 0
+        self.mode = 2
 
     def set_uniform(self):
         self.mesh.program['mode_id'] = self.mode

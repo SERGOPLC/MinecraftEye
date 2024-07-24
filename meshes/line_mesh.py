@@ -22,29 +22,20 @@ class LineMesh(BaseMesh):
         return np.array(data, dtype='float16')
 
     def get_vertex_data(self):
-        if self.start[0] <= self.end[0]:
-            x1 = self.end[0] - self.start[0]
-        else:
-            x1 = self.start[0] - self.end[0]
-        x2 = x1 + .05
+        x1 = self.end[0] - self.start[0] + .05
+        x2 = x1
 
-        if self.start[1] <= self.end[1]:
-            y1 = self.end[1] - self.start[1]
-        else:
-            y1 = self.start[1] - self.end[1]
-        y2 = y1 + .05
+        y1 = self.end[1] - self.start[1] + .05
+        y2 = y1
 
-        if self.start[2] <= self.end[2]:
-            z1 = self.end[2] - self.start[2]
-        else:
-            z1 = self.start[2] - self.end[2]
-        z2 = z1 + .05
+        z1 = self.end[2] - self.start[2] + .05
+        z2 = z1
 
         vertices = [
-            (0, 0, .05), (x2, y1, z2), (.05, .05, .05), (x1, y2, z2),
-            (0, .05, 0), (x1, y1, z1), (.05, 0, 0), (x2, y2, z1),
-            (x1, y1, z2), (.05, 0, .05), (x2, y2, z2), (0, .05, .05),
-            (x1, y2, z1), (0, 0, 0), (x2, y1, z1), (.05, .05, 0,)
+            (0, 0, .1), (x2, y1, z2), (.1, .1, .1), (x1, y2, z2),
+            (0, .1, 0), (x1, y1, z1), (.1, 0, 0), (x2, y2, z1),
+            (x1, y1, z2), (.1, 0, .1), (x2, y2, z2), (0, .1, .1),
+            (x1, y2, z1), (0, 0, 0), (x2, y1, z1), (.1, .1, 0,)
         ]
 
         indices = [
