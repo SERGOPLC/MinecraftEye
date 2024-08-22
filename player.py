@@ -6,6 +6,8 @@ from settings import *
 class Player(Camera):
     def __init__(self, app, position=PLAYER_POS, yaw=-90, pitch=0):
         self.app = app
+        self.mode_pressed = False
+        self.read_pressed = False
         super().__init__(position, yaw, pitch)
 
     def update(self):
@@ -47,3 +49,33 @@ class Player(Camera):
             self.move_up(vel)
         if key_state[pg.K_q]:
             self.move_down(vel)
+        if key_state[pg.K_m]:
+            if not self.mode_pressed:
+                if self.app.scene.render_mode < 5:
+                    self.app.scene.render_mode += 1
+                else:
+                    self.app.scene.render_mode = 0
+                match self.app.scene.render_mode:
+                    case 0:
+                        self.app.scene.render_mode_name = 'All Data'
+                    case 1:
+                        self.app.scene.render_mode_name = 'Only Plan'
+                    case 2:
+                        self.app.scene.render_mode_name = 'Plan + Perfect Match Edges'
+                    case 3:
+                        self.app.scene.render_mode_name = 'Plan + Imperfect Match Edges'
+                    case 4:
+                        self.app.scene.render_mode_name = 'Only Perfect Match Edges'
+                    case 5:
+                        self.app.scene.render_mode_name = 'Only Imperfect Match Edges'
+                self.mode_pressed = True
+        if not key_state[pg.K_m]:
+            self.mode_pressed = False
+
+        if key_state[pg.K_r]:
+            if not self.read_pressed:
+                self.app.scene.read_only = not self.app.scene.read_only
+                self.read_pressed = True
+
+        if not key_state[pg.K_r]:
+            self.read_pressed = False

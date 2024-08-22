@@ -42,6 +42,9 @@ class Scene:
         self.edges[(481, 33, 480)].mode = 3
         self.grid = dict()
         self.time = time.time()
+        self.render_mode = 0
+        self.render_mode_name = 'All Data'
+        self.read_only = False
 
     def update(self):
         self.world.update()
@@ -50,7 +53,7 @@ class Scene:
         updated = False
         current_state = None
 
-        if time.time() - self.time > 2:
+        if time.time() - self.time > 2 and not self.read_only:
             try:
                 load_states = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
                 load_edges = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
@@ -101,9 +104,52 @@ class Scene:
         # voxel selection
         self.voxel_marker.render()
 
-        # States render
+        # States / Edges render
+
         for key in self.states.keys():
             self.states[key].render()
 
         for key in self.edges.keys():
-            self.edges[key].render()
+            match self.render_mode:
+                case 0:
+                    # 0 - All
+                    self.edges[key].render()
+                case 1:
+                    # 1 - Only Plan
+                    match self.edges[key].mode:
+                        case 1:
+                            self.edges[key].render()
+                        case 4:
+                            self.edges[key].render()
+                        case 5:
+                            self.edges[key].render()
+                case 2:
+                    # 2 - Plan + Perfect Match Edges
+                    match self.edges[key].mode:
+                        case 3:
+                            self.edges[key].render()
+                        case 1:
+                            self.edges[key].render()
+                        case 4:
+                            self.edges[key].render()
+                        case 5:
+                            self.edges[key].render()
+                case 3:
+                    # 3 - Plan + Imperfect Match Edges
+                    match self.edges[key].mode:
+                        case 0:
+                            self.edges[key].render()
+                        case 1:
+                            self.edges[key].render()
+                        case 4:
+                            self.edges[key].render()
+                        case 5:
+                            self.edges[key].render()
+                case 4:
+                    # 4 - Only Perfect Match Edges
+                    if self.edges[key].mode == 3:
+                        self.edges[key].render()
+                case 5:
+                    # 5 - Only Imperfect Match Edges
+                    if self.edges[key].mode == 0:
+                        self.edges[key].render()
