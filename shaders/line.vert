@@ -8,7 +8,7 @@ uniform mat4 m_view;
 uniform mat4 m_model;
 uniform uint mode_id;
 
-const vec3 marker_colors[6] = vec3[6](vec3(1, 0, 0), vec3(.5, 1, .5), vec3(1, 1, 1), vec3(0, 0, 0), vec3(0, 1, 0), vec3(.023, .22, .7));
+const vec3 marker_colors[6] = vec3[6](vec3(1, 0, 0), vec3(.5, 1, .5), vec3(1, 1, 1), vec3(0, 0, 0), vec3(0, 1, 0), vec3(.023, .22, .4));
 
 out vec3 marker_color;
 out vec2 uv;

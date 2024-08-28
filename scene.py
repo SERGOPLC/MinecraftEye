@@ -17,34 +17,35 @@ class Scene:
         self.water = Water(app)
         self.clouds = Clouds(app)
         self.states = dict()
-        self.states[(480, 33, 480)] = State(app, glm.vec3(480.33, 33.33, 480.33))
-        self.states[(480, 33, 480)].mode = 0
-        self.states[(482, 37, 489)] = State(app, glm.vec3(482.33, 37.33, 489.33))
-        self.states[(482, 37, 489)].mode = 0
-        self.states[(481, 33, 480)] = State(app, glm.vec3(481.33, 33.33, 480.33))
-        self.states[(481, 33, 480)].mode = 1
-        self.states[(482, 33, 480)] = State(app, glm.vec3(482.33, 33.33, 480.33))
-        self.states[(482, 33, 480)].mode = 2
-        self.states[(483, 33, 480)] = State(app, glm.vec3(483.33, 33.33, 480.33))
-        self.states[(483, 33, 480)].mode = 3
-        self.states[(484, 33, 480)] = State(app, glm.vec3(484.33, 33.33, 480.33))
-        self.states[(484, 33, 480)].mode = 0
-        self.states[(485, 33, 480)] = State(app, glm.vec3(485.33, 33.33, 480.33))
-        self.states[(485, 33, 480)].mode = 0
-        self.states[(486, 33, 480)] = State(app, glm.vec3(486.33, 33.33, 480.33))
-        self.states[(486, 33, 480)].mode = 0
-        self.states[(487, 33, 480)] = State(app, glm.vec3(487.33, 33.33, 480.33))
-        self.states[(487, 33, 480)].mode = 0
+        # self.states[(480, 33, 480)] = State(app, glm.vec3(480.33, 33.33, 480.33))
+        # self.states[(480, 33, 480)].mode = 0
+        # self.states[(482, 37, 489)] = State(app, glm.vec3(482.33, 37.33, 489.33))
+        # self.states[(482, 37, 489)].mode = 0
+        # self.states[(481, 33, 480)] = State(app, glm.vec3(481.33, 33.33, 480.33))
+        # self.states[(481, 33, 480)].mode = 1
+        # self.states[(482, 33, 480)] = State(app, glm.vec3(482.33, 33.33, 480.33))
+        # self.states[(482, 33, 480)].mode = 2
+        # self.states[(483, 33, 480)] = State(app, glm.vec3(483.33, 33.33, 480.33))
+        # self.states[(483, 33, 480)].mode = 3
+        # self.states[(484, 33, 480)] = State(app, glm.vec3(484.33, 33.33, 480.33))
+        # self.states[(484, 33, 480)].mode = 0
+        # self.states[(485, 33, 480)] = State(app, glm.vec3(485.33, 33.33, 480.33))
+        # self.states[(485, 33, 480)].mode = 0
+        # self.states[(486, 33, 480)] = State(app, glm.vec3(486.33, 33.33, 480.33))
+        # self.states[(486, 33, 480)].mode = 0
+        # self.states[(487, 33, 480)] = State(app, glm.vec3(487.33, 33.33, 480.33))
+        # self.states[(487, 33, 480)].mode = 0
         self.edges = dict()
-        self.edges[(480, 33, 480)] = Line(app, (480.45, 33.45, 480.45), (482.45, 37.45, 489.45))
-        self.edges[(480, 33, 480)].mode = 3
-        self.edges[(481, 33, 480)] = Line(app, (480.45, 33.45, 480.45), (481.45, 33.45, 480.45))
-        self.edges[(481, 33, 480)].mode = 3
+        # self.edges[(480, 33, 480)] = Line(app, (480.45, 33.45, 480.45), (482.45, 37.45, 489.45))
+        # self.edges[(480, 33, 480)].mode = 3
+        # self.edges[(481, 33, 480)] = Line(app, (480.45, 33.45, 480.45), (481.45, 33.45, 480.45))
+        # self.edges[(481, 33, 480)].mode = 3
         self.grid = dict()
         self.time = time.time()
         self.render_mode = 0
         self.render_mode_name = 'All Data'
         self.read_only = False
+        self.toggle = False
 
     def update(self):
         self.world.update()
@@ -55,29 +56,44 @@ class Scene:
 
         if time.time() - self.time > 2 and not self.read_only:
             try:
-                load_states = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
-                load_edges = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
-                load_grid = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/grid_output.npy', allow_pickle=True).item()
+                load_states = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
+                load_edges = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
+                load_grid = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/grid_output.npy', allow_pickle=True).item()
 
                 self.time = time.time()
-                self.states = dict()
-                self.edges = dict()
 
                 for load_key in load_states.keys():
-                    self.states[load_key] = State(self.app, glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33))
-                    self.states[load_key].mode = load_states[load_key][3]
+                    try:
+                        self.states[load_key].mode = load_states[load_key][3]
+                    except KeyError:
+                        self.states[load_key] = State(self.app, glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33))
+                        self.states[load_key].mode = load_states[load_key][3]
+                    if load_states[load_key][3] == 1:
+                        self.app.player.focus_pos = glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33)
                     updated = True
 
                 for load_key in load_edges.keys():
-                    self.edges[load_key] = Line(self.app, glm.vec3(load_edges[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][1] + .45, load_edges[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .45), glm.vec3(load_edges[load_key][3] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][4] + .45, load_edges[load_key][5] + (WORLD_D * CHUNK_SIZE / 2) + .45))
-                    self.edges[load_key].mode = load_edges[load_key][6]
+                    try:
+                        self.edges[load_key].mode = load_edges[load_key][6]
+                    except KeyError:
+                        self.edges[load_key] = Line(self.app, glm.vec3(load_edges[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][1] + .45, load_edges[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .45), glm.vec3(load_edges[load_key][3] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][4] + .45, load_edges[load_key][5] + (WORLD_D * CHUNK_SIZE / 2) + .45))
+                        self.edges[load_key].mode = load_edges[load_key][6]
                     updated = True
+
+                del_list = []
+                for check_key in self.edges.keys():
+                    if check_key not in load_edges.keys():
+                        del_list.append(check_key)
+
+                for item in del_list:
+                    del self.edges[item]
 
                 for load_key in load_grid.keys():
                     if load_key not in self.grid.keys():
                         self.grid[load_key] = load_grid[load_key]
                         self.world.voxel_handler.add_voxel(load_grid[load_key][0] + (WORLD_W * CHUNK_SIZE / 2), load_grid[load_key][1], load_grid[load_key][2] + (WORLD_D * CHUNK_SIZE / 2), load_grid[load_key][3])
                         updated = True
+
             except FileNotFoundError:
                 pass
             except PermissionError:
@@ -97,8 +113,8 @@ class Scene:
 
         # rendering without cull face
         self.app.ctx.disable(mgl.CULL_FACE)
-        self.clouds.render()
-        self.water.render()
+        # self.clouds.render()
+        # self.water.render()
         self.app.ctx.enable(mgl.CULL_FACE)
 
         # voxel selection

@@ -1,18 +1,88 @@
 import pygame as pg
 from camera import Camera
+import moderngl as mgl
 from settings import *
 
 
 class Player(Camera):
     def __init__(self, app, position=PLAYER_POS, yaw=-90, pitch=0):
         self.app = app
+        self.cam = Camera
         self.mode_pressed = False
         self.read_pressed = False
+        self.follow_pressed = False
+        self.xray_pressed = False
+        self.xray_mode = False
+        self.angle = 0
+        self.height = 0
+        self.height_switch = False
+        self.distance = 40
+        self.follow_mode = False
+        self.distance_mode = 0
+        self.distance_switch = 0
         super().__init__(position, yaw, pitch)
 
     def update(self):
         self.keyboard_control()
         self.mouse_control()
+
+        if self.follow_mode:
+            if self.distance_mode == 0:
+                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 100
+            elif self.distance_mode == 1:
+                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 50
+            elif self.distance_mode == 2:
+                self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 50
+            elif self.distance_mode == 3:
+                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 25
+            elif self.distance_mode == 4:
+                self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 25
+            elif self.distance_mode == 5:
+                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 10
+            elif self.distance_mode == 6:
+                self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 10
+            elif self.distance_mode == 7:
+                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 5
+            elif self.distance_mode == 8:
+                self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 5
+
+            camX = self.focus_pos[0] + self.distance * -math.sin(self.angle*(math.pi/180))
+            camY = self.focus_pos[1]
+            camZ = self.focus_pos[2] + -self.distance * math.cos(self.angle*(math.pi/180))
+
+            self.angle += .01 * self.app.delta_time
+            if not self.height_switch:
+                if self.height < self.distance / 2:
+                    self.height += (self.distance / 10000) * self.app.delta_time
+                else:
+                    self.height_switch = not self.height_switch
+            else:
+                if self.height > -self.distance / 2:
+                    self.height -= (self.distance / 10000) * self.app.delta_time
+                else:
+                    self.height_switch = not self.height_switch
+
+            if self.distance_switch < 360:
+                self.distance_switch += .01 * self.app.delta_time
+            else:
+                if self.distance_mode < 8:
+                    self.distance_mode += 1
+                else:
+                    self.distance_mode = 0
+
+                self.distance_switch = 0
+
+            self.position = glm.vec3(camX, camY + self.height, camZ)
+
         super().update()
 
     def handle_event(self, event):
@@ -25,11 +95,12 @@ class Player(Camera):
                 voxel_handler.switch_mode()
 
     def mouse_control(self):
-        mouse_dx, mouse_dy = pg.mouse.get_rel()
-        if mouse_dx:
-            self.rotate_yaw(delta_x=mouse_dx * MOUSE_SENSITIVITY)
-        if mouse_dy:
-            self.rotate_pitch(delta_y=mouse_dy * MOUSE_SENSITIVITY)
+        if not self.follow_mode:
+            mouse_dx, mouse_dy = pg.mouse.get_rel()
+            if mouse_dx:
+                self.rotate_yaw(delta_x=mouse_dx * MOUSE_SENSITIVITY)
+            if mouse_dy:
+                self.rotate_pitch(delta_y=mouse_dy * MOUSE_SENSITIVITY)
 
     def keyboard_control(self):
         key_state = pg.key.get_pressed()
@@ -79,3 +150,31 @@ class Player(Camera):
 
         if not key_state[pg.K_r]:
             self.read_pressed = False
+
+        if key_state[pg.K_f]:
+            if not self.follow_pressed:
+                self.follow_mode = not self.follow_mode
+                self.cam.follow_mode = self.follow_mode
+                if self.follow_mode:
+                    self.rotate_yaw(self.yaw)
+                    self.rotate_pitch(self.pitch)
+                    print('pitch', self.pitch)
+                else:
+                    self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.follow_pressed = True
+
+        if not key_state[pg.K_f]:
+            self.follow_pressed = False
+
+        if key_state[pg.K_x]:
+            if not self.xray_pressed:
+                self.xray_mode = not self.xray_mode
+
+                if self.xray_mode:
+                    self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                else:
+                    self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.xray_pressed = True
+
+        if not key_state[pg.K_x]:
+            self.xray_pressed = False

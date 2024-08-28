@@ -15,6 +15,9 @@ class Camera:
         self.m_proj = glm.perspective(V_FOV, ASPECT_RATIO, NEAR, FAR)
         self.m_view = glm.mat4()
 
+        self.focus_pos = glm.vec3(0, 0, 0)
+        self.follow_mode = False
+
         self.frustum = Frustum(self)
 
     def update(self):
@@ -23,6 +26,9 @@ class Camera:
 
     def update_view_matrix(self):
         self.m_view = glm.lookAt(self.position, self.position + self.forward, self.up)
+
+        if self.follow_mode:
+            self.m_view = glm.lookAt(self.position, self.focus_pos, self.up)
 
     def update_vectors(self):
         self.forward.x = glm.cos(self.yaw) * glm.cos(self.pitch)
