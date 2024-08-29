@@ -56,9 +56,9 @@ class Scene:
 
         if time.time() - self.time > 2 and not self.read_only:
             try:
-                load_states = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
-                load_edges = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
-                load_grid = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/grid_output.npy', allow_pickle=True).item()
+                load_states = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
+                load_edges = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
+                load_grid = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/grid_output.npy', allow_pickle=True).item()
 
                 self.time = time.time()
 
@@ -66,17 +66,17 @@ class Scene:
                     try:
                         self.states[load_key].mode = load_states[load_key][3]
                     except KeyError:
-                        self.states[load_key] = State(self.app, glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33))
+                        self.states[load_key] = State(self.app, glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33 + 64, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33))
                         self.states[load_key].mode = load_states[load_key][3]
                     if load_states[load_key][3] == 1:
-                        self.app.player.focus_pos = glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33)
+                        self.app.player.focus_pos = glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33 + 64, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33)
                     updated = True
 
                 for load_key in load_edges.keys():
                     try:
                         self.edges[load_key].mode = load_edges[load_key][6]
                     except KeyError:
-                        self.edges[load_key] = Line(self.app, glm.vec3(load_edges[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][1] + .45, load_edges[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .45), glm.vec3(load_edges[load_key][3] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][4] + .45, load_edges[load_key][5] + (WORLD_D * CHUNK_SIZE / 2) + .45))
+                        self.edges[load_key] = Line(self.app, glm.vec3(load_edges[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][1] + .45 + 64, load_edges[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .45), glm.vec3(load_edges[load_key][3] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][4] + .45 + 64, load_edges[load_key][5] + (WORLD_D * CHUNK_SIZE / 2) + .45))
                         self.edges[load_key].mode = load_edges[load_key][6]
                     updated = True
 
@@ -91,7 +91,7 @@ class Scene:
                 for load_key in load_grid.keys():
                     if load_key not in self.grid.keys():
                         self.grid[load_key] = load_grid[load_key]
-                        self.world.voxel_handler.add_voxel(load_grid[load_key][0] + (WORLD_W * CHUNK_SIZE / 2), load_grid[load_key][1], load_grid[load_key][2] + (WORLD_D * CHUNK_SIZE / 2), load_grid[load_key][3])
+                        self.world.voxel_handler.add_voxel(load_grid[load_key][0] + (WORLD_W * CHUNK_SIZE / 2), load_grid[load_key][1] + 64, load_grid[load_key][2] + (WORLD_D * CHUNK_SIZE / 2), load_grid[load_key][3])
                         updated = True
 
             except FileNotFoundError:
