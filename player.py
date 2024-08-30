@@ -18,7 +18,7 @@ class Player(Camera):
         self.height_switch = False
         self.distance = 40
         self.follow_mode = False
-        self.distance_mode = 0
+        self.distance_mode = 8
         self.distance_switch = 0
         super().__init__(position, yaw, pitch)
 
@@ -30,30 +30,43 @@ class Player(Camera):
             if self.distance_mode == 0:
                 self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
                 self.distance = 100
+                self.xray_mode = False
             elif self.distance_mode == 1:
-                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
-                self.distance = 50
+                self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 100
+                self.xray_mode = True
             elif self.distance_mode == 2:
+                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 50
+                self.xray_mode = False
+            elif self.distance_mode == 3:
                 self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
                 self.distance = 50
-            elif self.distance_mode == 3:
-                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
-                self.distance = 25
+                self.xray_mode = True
             elif self.distance_mode == 4:
+                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 25
+                self.xray_mode = False
+            elif self.distance_mode == 5:
                 self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
                 self.distance = 25
-            elif self.distance_mode == 5:
-                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
-                self.distance = 10
+                self.xray_mode = True
             elif self.distance_mode == 6:
+                self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                self.distance = 10
+                self.xray_mode = False
+            elif self.distance_mode == 7:
                 self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
                 self.distance = 10
-            elif self.distance_mode == 7:
+                self.xray_mode = True
+            elif self.distance_mode == 8:
                 self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
                 self.distance = 5
-            elif self.distance_mode == 8:
+                self.xray_mode = False
+            elif self.distance_mode == 9:
                 self.app.ctx.disable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
                 self.distance = 5
+                self.xray_mode = True
 
             camX = self.focus_pos[0] + self.distance * -math.sin(self.angle*(math.pi/180))
             camY = self.focus_pos[1]
@@ -74,7 +87,7 @@ class Player(Camera):
             if self.distance_switch < 360:
                 self.distance_switch += .01 * self.app.delta_time
             else:
-                if self.distance_mode < 8:
+                if self.distance_mode < 9:
                     self.distance_mode += 1
                 else:
                     self.distance_mode = 0
@@ -161,6 +174,7 @@ class Player(Camera):
                     print('pitch', self.pitch)
                 else:
                     self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
+                    self.xray_mode = False
                 self.follow_pressed = True
 
         if not key_state[pg.K_f]:

@@ -46,7 +46,9 @@ class Scene:
         self.render_mode_name = 'All Data'
         self.read_only = False
         self.toggle = False
-
+        self.world.voxel_handler.add_voxel(WORLD_W * CHUNK_SIZE / 2, 128, WORLD_D * CHUNK_SIZE / 2, 'diamond_ore')
+        self.view_box = []
+        self.agent_pos = glm.vec3(0, 0, 0)
     def update(self):
         self.world.update()
         self.voxel_marker.update()
@@ -56,9 +58,9 @@ class Scene:
 
         if time.time() - self.time > 2 and not self.read_only:
             try:
-                load_states = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
-                load_edges = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
-                load_grid = np.load('C:/Users/tron3/PycharmProjects/experiential-minecraft/examples/output/grid_output.npy', allow_pickle=True).item()
+                load_states = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
+                load_edges = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
+                load_grid = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/grid_output.npy', allow_pickle=True).item()
 
                 self.time = time.time()
 
@@ -70,6 +72,7 @@ class Scene:
                         self.states[load_key].mode = load_states[load_key][3]
                     if load_states[load_key][3] == 1:
                         self.app.player.focus_pos = glm.vec3(load_states[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_states[load_key][1] + .33 + 64, load_states[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .33)
+                        self.agent_pos = self.app.player.focus_pos
                     updated = True
 
                 for load_key in load_edges.keys():
@@ -94,6 +97,35 @@ class Scene:
                         self.world.voxel_handler.add_voxel(load_grid[load_key][0] + (WORLD_W * CHUNK_SIZE / 2), load_grid[load_key][1] + 64, load_grid[load_key][2] + (WORLD_D * CHUNK_SIZE / 2), load_grid[load_key][3])
                         updated = True
 
+                # Create view box
+                self.view_box = []
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] - 2 - .33, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] + 2 + .66, self.agent_pos[2] - 2 - .33)))
+                self.view_box[0].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] - 2 - .33, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] + 2 + .66, self.agent_pos[2] - 2 - .33)))
+                self.view_box[1].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] - 2 - .33, self.agent_pos[2] + 2 + .66), glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] + 2 + .66, self.agent_pos[2] + 2 + .66)))
+                self.view_box[2].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] - 2 - .33, self.agent_pos[2] + 2 + .66), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] + 2 + .66, self.agent_pos[2] + 2 + .66)))
+                self.view_box[3].mode = 6
+
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] - 2 - .33, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] - 2 - .33, self.agent_pos[2] + 2 + .66)))
+                self.view_box[4].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] - 2 - .33, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] - 2 - .33, self.agent_pos[2] + 2 + .66)))
+                self.view_box[5].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] - 2 - .33, self.agent_pos[2] + 2 + .66), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] - 2 - .33, self.agent_pos[2] + 2 + .66)))
+                self.view_box[6].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] - 2 - .33, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] - 2 - .33, self.agent_pos[2] - 2 - .33)))
+                self.view_box[7].mode = 6
+
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] + 2 + .66, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] + 2 + .66, self.agent_pos[2] + 2 + .66)))
+                self.view_box[8].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] + 2 + .66, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] + 2 + .66, self.agent_pos[2] + 2 + .66)))
+                self.view_box[9].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] + 2 + .66, self.agent_pos[2] + 2 + .66), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] + 2 + .66, self.agent_pos[2] + 2 + .66)))
+                self.view_box[10].mode = 6
+                self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] + 2 + .66, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] + 2 + .66, self.agent_pos[2] - 2 - .33)))
+                self.view_box[11].mode = 6
+
             except FileNotFoundError:
                 pass
             except PermissionError:
@@ -113,12 +145,17 @@ class Scene:
 
         # rendering without cull face
         self.app.ctx.disable(mgl.CULL_FACE)
-        # self.clouds.render()
-        # self.water.render()
+        if not self.app.player.xray_mode:
+            self.clouds.render()
+            self.water.render()
         self.app.ctx.enable(mgl.CULL_FACE)
 
         # voxel selection
         self.voxel_marker.render()
+
+        # view box render
+        for item in self.view_box:
+            item.render()
 
         # States / Edges render
 
