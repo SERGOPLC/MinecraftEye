@@ -30,7 +30,7 @@ class VoxelHandler:
         for i, v in enumerate(clean):
             self.voxel_dict[v[0]] = i
 
-        print(self.voxel_dict)
+        # print(self.voxel_dict)
 
     def add_voxel(self, x, y, z, kind):
         # if self.voxel_id:
@@ -58,8 +58,7 @@ class VoxelHandler:
                     case 'grass_block':
                         kind = 'grass_block_top'
                 chunk.voxels[voxel_index] = self.voxel_dict[kind]
-                print('type', kind, self.voxel_dict[kind])
-
+                # print('type', kind, self.voxel_dict[kind])
                 chunk.mesh.rebuild()
 
                 # was it an empty chunk

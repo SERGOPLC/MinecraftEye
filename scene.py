@@ -48,7 +48,9 @@ class Scene:
         self.toggle = False
         self.world.voxel_handler.add_voxel(WORLD_W * CHUNK_SIZE / 2, 128, WORLD_D * CHUNK_SIZE / 2, 'diamond_ore')
         self.view_box = []
+        self.goal_box = []
         self.agent_pos = glm.vec3(0, 0, 0)
+        self.goal_pos = glm.vec3(0, 0, 0)
     def update(self):
         self.world.update()
         self.voxel_marker.update()
@@ -81,6 +83,8 @@ class Scene:
                     except KeyError:
                         self.edges[load_key] = Line(self.app, glm.vec3(load_edges[load_key][0] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][1] + .45 + 64, load_edges[load_key][2] + (WORLD_D * CHUNK_SIZE / 2) + .45), glm.vec3(load_edges[load_key][3] + (WORLD_W * CHUNK_SIZE / 2) + .45, load_edges[load_key][4] + .45 + 64, load_edges[load_key][5] + (WORLD_D * CHUNK_SIZE / 2) + .45))
                         self.edges[load_key].mode = load_edges[load_key][6]
+                        if load_edges[load_key][7] == 1:
+                            self.goal_pos = glm.vec3(load_edges[load_key][3] + (WORLD_W * CHUNK_SIZE / 2) + .33, load_edges[load_key][4] + .33 + 64, load_edges[load_key][5] + (WORLD_D * CHUNK_SIZE / 2) + .33)
                     updated = True
 
                 del_list = []
@@ -90,6 +94,10 @@ class Scene:
 
                 for item in del_list:
                     del self.edges[item]
+
+                for check_key in self.states.keys():
+                    if check_key not in load_states.keys():
+                        self.states[check_key].mode = 3
 
                 for load_key in load_grid.keys():
                     if load_key not in self.grid.keys():
@@ -126,6 +134,35 @@ class Scene:
                 self.view_box.append(Line(self.app, glm.vec3(self.agent_pos[0] - 2 - .33, self.agent_pos[1] + 2 + .66, self.agent_pos[2] - 2 - .33), glm.vec3(self.agent_pos[0] + 2 + .66, self.agent_pos[1] + 2 + .66, self.agent_pos[2] - 2 - .33)))
                 self.view_box[11].mode = 6
 
+                # Create Goal Box
+                self.goal_box = []
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] - 2 - .33, self.goal_pos[2] - 2 - .33), glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] + 2 + .66, self.goal_pos[2] - 2 - .33)))
+                self.goal_box[0].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] - 2 - .33, self.goal_pos[2] - 2 - .33), glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] + 2 + .66, self.goal_pos[2] - 2 - .33)))
+                self.goal_box[1].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] - 2 - .33, self.goal_pos[2] + 2 + .66), glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] + 2 + .66, self.goal_pos[2] + 2 + .66)))
+                self.goal_box[2].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] - 2 - .33, self.goal_pos[2] + 2 + .66), glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] + 2 + .66, self.goal_pos[2] + 2 + .66)))
+                self.goal_box[3].mode = 4
+
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] - 2 - .33, self.goal_pos[2] - 2 - .33), glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] - 2 - .33, self.goal_pos[2] + 2 + .66)))
+                self.goal_box[4].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] - 2 - .33, self.goal_pos[2] - 2 - .33), glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] - 2 - .33, self.goal_pos[2] + 2 + .66)))
+                self.goal_box[5].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] - 2 - .33, self.goal_pos[2] + 2 + .66), glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] - 2 - .33, self.goal_pos[2] + 2 + .66)))
+                self.goal_box[6].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] - 2 - .33, self.goal_pos[2] - 2 - .33), glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] - 2 - .33, self.goal_pos[2] - 2 - .33)))
+                self.goal_box[7].mode = 4
+
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] + 2 + .66, self.goal_pos[2] - 2 - .33), glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] + 2 + .66, self.goal_pos[2] + 2 + .66)))
+                self.goal_box[8].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] + 2 + .66, self.goal_pos[2] - 2 - .33), glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] + 2 + .66, self.goal_pos[2] + 2 + .66)))
+                self.goal_box[9].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] + 2 + .66, self.goal_pos[2] + 2 + .66), glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] + 2 + .66, self.goal_pos[2] + 2 + .66)))
+                self.goal_box[10].mode = 4
+                self.goal_box.append(Line(self.app, glm.vec3(self.goal_pos[0] - 2 - .33, self.goal_pos[1] + 2 + .66, self.goal_pos[2] - 2 - .33), glm.vec3(self.goal_pos[0] + 2 + .66, self.goal_pos[1] + 2 + .66, self.goal_pos[2] - 2 - .33)))
+                self.goal_box[11].mode = 4
+
             except FileNotFoundError:
                 pass
             except PermissionError:
@@ -157,10 +194,17 @@ class Scene:
         for item in self.view_box:
             item.render()
 
+        for item in self.goal_box:
+            item.render()
+
         # States / Edges render
 
         for key in self.states.keys():
-            self.states[key].render()
+            if self.app.player.show_all_states_mode:
+                self.states[key].render()
+            else:
+                if self.states[key].mode != 3:
+                    self.states[key].render()
 
         for key in self.edges.keys():
             match self.render_mode:

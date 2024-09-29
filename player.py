@@ -13,6 +13,8 @@ class Player(Camera):
         self.follow_pressed = False
         self.xray_pressed = False
         self.xray_mode = False
+        self.show_all_states_pressed = False
+        self.show_all_states_mode = False
         self.angle = 0
         self.height = 0
         self.height_switch = False
@@ -171,7 +173,7 @@ class Player(Camera):
                 if self.follow_mode:
                     self.rotate_yaw(self.yaw)
                     self.rotate_pitch(self.pitch)
-                    print('pitch', self.pitch)
+                    # print('pitch', self.pitch)
                 else:
                     self.app.ctx.enable(flags=mgl.DEPTH_TEST | mgl.CULL_FACE | mgl.BLEND)
                     self.xray_mode = False
@@ -192,3 +194,11 @@ class Player(Camera):
 
         if not key_state[pg.K_x]:
             self.xray_pressed = False
+
+        if key_state[pg.K_b]:
+            if not self.show_all_states_pressed:
+                self.show_all_states_mode = not self.show_all_states_mode
+                self.show_all_states_pressed = True
+
+        if not key_state[pg.K_b]:
+            self.show_all_states_pressed = False
