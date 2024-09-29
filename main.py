@@ -50,7 +50,7 @@ class VoxelEngine:
         self.time = pg.time.get_ticks() * 0.001
 
         if not self.scene.read_only:
-            pg.display.set_caption(self.scene.render_mode_name + ' - Agent Pos: [ ' + str(math.floor(self.player.focus_pos[0] - (WORLD_W * CHUNK_SIZE / 2))) + ' , ' + str(math.floor(self.player.focus_pos[1])) + ' , ' + str(math.floor(self.player.focus_pos[2] - (WORLD_D * CHUNK_SIZE / 2))) + ' ] - ' + f'{self.clock.get_fps() :.0f}')
+            pg.display.set_caption(self.scene.render_mode_name + ' - Agent Pos: [ ' + str(math.floor(self.player.focus_pos[0] - (WORLD_W * CHUNK_SIZE / 2))) + ' , ' + str(math.floor(self.player.focus_pos[1]) - 64) + ' , ' + str(math.floor(self.player.focus_pos[2] - (WORLD_D * CHUNK_SIZE / 2))) + ' ] - ' + f'{self.clock.get_fps() :.0f}')
         else:
             pg.display.set_caption(self.scene.render_mode_name + ' - ' + f'{self.clock.get_fps() :.0f}' + ' Read Only Mode')
 
