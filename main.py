@@ -67,7 +67,7 @@ class VoxelEngine:
                 self.focus = False
                 pg.event.set_grab(False)
                 pg.mouse.set_visible(True)
-            if event.type == pg.KEYDOWN and event.key == pg.K_KP_ENTER:
+            if event.type == pg.KEYDOWN and (event.key == pg.K_KP_ENTER or event.key == pg.K_RETURN):
                 self.focus = True
                 pg.event.set_grab(True)
                 pg.mouse.set_visible(False)
