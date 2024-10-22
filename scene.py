@@ -60,9 +60,20 @@ class Scene:
 
         if time.time() - self.time > 2 and not self.read_only:
             try:
-                load_states = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/state_output.npy', allow_pickle=True).item()
-                load_edges = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/edge_output.npy', allow_pickle=True).item()
-                load_grid = np.load('/home/berick/PycharmProjects/experiential-minecraft/examples/output/grid_output.npy', allow_pickle=True).item()
+                # Get the current script's directory
+                current_dir = os.path.dirname(os.path.abspath(__file__))
+
+                # Construct relative paths
+                output_dir = os.path.join(current_dir, '..', 'client', 'output')
+
+                state_path = os.path.join(output_dir, 'state_output.npy')
+                edge_path = os.path.join(output_dir, 'edge_output.npy')
+                grid_path = os.path.join(output_dir, 'grid_output.npy')
+
+                # Load the files
+                load_states = np.load(state_path, allow_pickle=True).item()
+                load_edges = np.load(edge_path, allow_pickle=True).item()
+                load_grid = np.load(grid_path, allow_pickle=True).item()
 
                 self.time = time.time()
 
